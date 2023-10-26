@@ -1,0 +1,33 @@
+.progress-bar-wrapper {
+    flex-grow: 1;
+}
+.progress-bar {
+    width: 100%;
+    border: 1px solid;
+    border-radius: 15px;
+    background-color: white;
+    text-align: center;
+    height: 2rem;
+    position: relative;
+    overflow: hidden;
+    .percentage {
+        height: 100%;
+        background-color: #007bff;
+    }
+}
+.divide-count {
+    position: relative;
+    display: flex;
+    > *:last-child {
+        position: absolute;
+        right: 0px;
+    }
+    > :not(:last-child) {
+        flex-grow: 1;
+        text-align: left;
+    }
+}
+.cur-progress {
+    margin-left: 0.5rem;
+    width: 4rem;
+}

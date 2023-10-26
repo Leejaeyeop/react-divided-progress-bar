@@ -1,76 +1,29 @@
-{/* <template>
-    <div style="display: flex">
-        <div class="progress-bar-wrapper">
-            <div class="progress-bar">
-                <div
-                    ref="percentageRef"
-                    class="percentage"
-                ></div>
-            </div>
-            <div
-                class="divide-count"
-                v-if="props.divide"
-            >
-                <div
-                    v-for="index in getDivideCount"
-                    :key="index"
-                >
-                    {{ (props.maxProgress / props.divideCount) * index }}
-                </div>
-                <div>{{ props.maxProgress }}</div>
-            </div>
-        </div>
-        <div
-            class="cur-progress"
-            v-if="props.numToRight"
-        >
-            {{ curProgress }}%
-        </div>
-    </div>
-</template>
-<script setup>
-import { ref, defineProps, computed, onMounted } from "vue";
+import "./progressBar.css"
+import React, {useEffect} from "react";
 
-const props = defineProps({
-    numToRight: Boolean,
-    divide: Boolean,
-    divideCount: {
-        type: Number,
-        default: 0,
-    },
-    maxProgress: {
-        type: Number,
-        default: 100,
-    },
-    curProgress: {
-        type: Number,
-        default: 0,
-    },
-    increaseDuration: {
-        type: Number,
-        default: 1000,
-    },
-    color: {
-        type: String,
-        default: "#007bff",
-    },
-});
-const getDivideCount = computed(() => {
-    let arr = [];
-    for (let i = 0; i < props.divideCount; i++) arr.push(i);
-    return arr;
-});
+export default function ProgressBar(props: any) {
+    const { curProgress = 0, increaseDuration = 1000, divideCount = 0, color, divide, numToRight, maxProgress = 100} = props;
 
-const percentageRef = ref(null);
+    useEffect(()=> {
+        console.log("실행")
+        animateProgressBar(curProgress, increaseDuration);
+    },[curProgress])
 
-onMounted(() => {
-    function animateProgressBar(targetPercentage, duration) {
-        const percentageElement = percentageRef.value;
-        percentageElement.style.backgroundColor = props.color;
+    const getDivideCount = () => {
+        let arr = [];
+        for (let i = 0; i < divideCount; i++) arr.push(i);
+        return arr;
+    };
+
+    const percentageRef = React.createRef<HTMLDivElement>();
+    
+    function animateProgressBar(targetPercentage: number, duration: number) {
+        const percentageElement = percentageRef.current as HTMLDivElement;
+        percentageElement.style.backgroundColor = color;
         const startPercentage = 0;
 
         const startTime = performance.now();
-        function updatePercentage(timestamp) {
+        function updatePercentage(timestamp: number) {
             const elapsed = timestamp - startTime;
             const progress = Math.min(elapsed / duration, 1);
             const currentPercentage = startPercentage + (targetPercentage - startPercentage) * progress;
@@ -84,41 +37,38 @@ onMounted(() => {
         requestAnimationFrame(updatePercentage);
     }
 
-    animateProgressBar(props.curProgress, props.increaseDuration);
-});
-</script>
-<style scoped>
-.progress-bar-wrapper {
-    flex-grow: 1;
+    
+    return (
+        <div style={{ display: "flex" }}> 
+            <div className="progress-bar-wrapper">
+                <div className="progress-bar">
+                    <div
+                        ref={percentageRef}
+                        className="percentage"
+                    ></div>
+                </div>
+                {/* <div
+                    class="divide-count"
+                    v-if="divide"
+                >
+                    <div
+                        v-for="index in getDivideCount"
+                        :key="index"
+                    >
+                        {{ (maxProgress / divideCount) * index }}
+                    </div>
+                    <div>{{ maxProgress }}</div>
+                </div> */}
+            </div>
+            {
+                numToRight ? 
+                <div
+                className="cur-progress"
+                >
+                    { curProgress }%
+                </div> : null
+            }
+
+        </div>
+    )
 }
-.progress-bar {
-    width: 100%;
-    border: 1px solid;
-    border-radius: 15px;
-    background-color: white;
-    text-align: center;
-    height: 2rem;
-    position: relative;
-    overflow: hidden;
-    .percentage {
-        height: 100%;
-        background-color: #007bff;
-    }
-}
-.divide-count {
-    position: relative;
-    display: flex;
-    > *:last-child {
-        position: absolute;
-        right: 0px;
-    }
-    > :not(:last-child) {
-        flex-grow: 1;
-        text-align: left;
-    }
-}
-.cur-progress {
-    margin-left: 0.5rem;
-    width: 4rem;
-}
-</style> */}
