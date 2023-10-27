@@ -1,19 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import reportWebVitals from './reportWebVitals';
-import ProgressBar from './progressBar';
+import App from './app';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
+
 root.render(
   <React.StrictMode>
-    <div style={{width: "50%"}}>
-      <ProgressBar 
-        curProgress={50}
-      />
-    </div>
+    <App></App>
   </React.StrictMode>
 );
 
