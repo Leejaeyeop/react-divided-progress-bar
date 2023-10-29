@@ -1,35 +1,120 @@
+'use client'
 import "./progressBar.css"
-import React, {useEffect, useState, useRef} from "react";
+import {useEffect, useState, useRef} from "react";
 
-export default function ProgressBar(props: any) {
+export type ProgressBarType = {
+    value?: number,
+    maxValue?: number,
+    increaseDuration?: number,
+    divide?: boolean
+    divideCount?: number,
+    color?: string,
+    colorChanging?:boolean,
+    stripped?: boolean,
+    animated?: boolean
+}
+
+type colorClass = {
+    [color:string] : string
+}
+
+export default function ProgressBar(props: ProgressBarType) {
     const curPercentage = useRef(0)
     const targetPercentage = useRef(0)
     const [isAnimating, setIsAnimating] = useState(false)
 
     const { value = 0, increaseDuration = 1000, divideCount = 5, 
-        color="info", divide = true, 
-        maxValue = 100} = props;
-
-    const colorClass: any = {
-        "info": "bg-info",
-        "success": "bg-success",
-        "warning": "bg-warning",
-        "danger": "bg-danger"
-    }
-    const defaultColorClass = "bg-info"
+        color="info", colorChanging=false, divide = true, 
+        maxValue = 100, animated = false, stripped = false} = props;
     
     const progressRef = useRef<HTMLDivElement>(null);
     const progressBarRef = useRef<HTMLDivElement>(null);
-
     useEffect(()=> {
+        const colorClass: colorClass = {
+            "info": "bg-info",
+            "success": "bg-success",
+            "warning": "bg-warning",
+            "danger": "bg-danger"
+        }
+        const defaultColorClass = "bg-info"
+
         const progressElement = progressRef.current as HTMLDivElement;
         const progressBarElement = progressBarRef.current as HTMLDivElement;
-    
+        
+        progressElement.className = "progress"
+        progressBarElement.className = "progress-bar"
+
         progressElement.classList.add(colorClass[color] ?? defaultColorClass);
         progressBarElement.classList.add(colorClass[color] ?? defaultColorClass);
-    },[])
+
+        if(stripped) {
+            progressElement.classList.add("progress-bar-striped");
+        }
+        if(animated) {
+            progressElement.classList.add("progress-bar-animated");
+        }
+    },[color,stripped,animated])
 
     useEffect(()=> {
+        const colorInfo: any = {
+            "info": {
+                begin: [144, 202, 249],
+                end: [47, 162, 255]
+            },
+            "success": {
+                begin: [47,198,128],
+                end: [0,171,139]   
+            },
+            "warning": {
+                begin: [255,193,7],
+                end: [255,162,0]    
+            },
+            "danger": {
+                begin: [255,149,160],
+                end: [255,72,91]    
+            }
+        }
+        
+        const getCurColor = (currentPercentage: number):string => {
+            let r,g,b = 0
+            const [beginR, beginG, beginB] = colorInfo[color].begin ?? colorInfo.info.begin
+            const [endR, endG, endB] = colorInfo[color].end ?? colorInfo.info.end
+    
+            r = Math.floor((endR - beginR)*(currentPercentage * 0.01))
+            g = Math.floor((endG - beginG)*(currentPercentage * 0.01))
+            b = Math.floor((endB - beginB)*(currentPercentage * 0.01))
+    
+            return `rgb(${beginR +r}, ${beginG +g}, ${beginB + b})`
+        }
+
+        const animateProgressBar = (duration: number) => {
+            const startPercentage = curPercentage.current;
+    
+            const startTime = performance.now();
+            const updatePercentage = (timestamp: number) => {
+                const progressElement = progressRef.current as HTMLDivElement;
+    
+                const elapsed = timestamp - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+    
+                const currentPercentage = startPercentage + (targetPercentage.current - startPercentage) * progress;
+    
+                progressElement.style.width = currentPercentage + "%";
+                if(colorChanging) {
+                    progressElement.style.backgroundColor = getCurColor(currentPercentage)
+                }
+                curPercentage.current = currentPercentage
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updatePercentage);
+                } else {
+                    setIsAnimating(false)
+                }
+            }
+    
+            requestAnimationFrame(updatePercentage);
+        }
+
         if(value > maxValue) {
             targetPercentage.current = maxValue
         } else if (value < 0) {
@@ -37,45 +122,18 @@ export default function ProgressBar(props: any) {
         } else {
             targetPercentage.current = value
         }
-        
+
         if(!isAnimating) {
             setIsAnimating(true)
             animateProgressBar(increaseDuration);
         }
-    },[value])
+    },[value,increaseDuration,isAnimating,maxValue,colorChanging,color])
 
     const getDivideCount = (): number[]  => {
         let arr = [];
         for (let i = 0; i < divideCount; i++) arr.push(i);
         return arr;
     };
-
-
-    const animateProgressBar = (duration: number) => {
-        const startPercentage = curPercentage.current;
-
-        const startTime = performance.now();
-        const updatePercentage = (timestamp: number) => {
-            const progressElement = progressRef.current as HTMLDivElement;
-
-            const elapsed = timestamp - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-
-            const currentPercentage = startPercentage + (targetPercentage.current - startPercentage) * progress;
-
-            progressElement.style.width = currentPercentage + "%";
-            curPercentage.current = currentPercentage
-
-            if (progress < 1) {
-                requestAnimationFrame(updatePercentage);
-            } else {
-                setIsAnimating(false)
-            }
-        }
-
-        requestAnimationFrame(updatePercentage);
-    }
-
     
     return (
         <div style={{ display: "flex" }}> 
@@ -85,7 +143,6 @@ export default function ProgressBar(props: any) {
                         ref={progressRef}
                         className="progress"
                     >
-                                                    {/* { value }% */}
                         <div
                         className="cur-progress-text"
                         >

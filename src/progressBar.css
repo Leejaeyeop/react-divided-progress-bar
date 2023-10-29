@@ -11,6 +11,7 @@
     height: 24px;
     position: relative;
     overflow: visible;
+
 }
 
 .progress {
@@ -57,7 +58,7 @@
 }
 
 .progress-bar-wrapper .bg-info {
-    background-color: rgb(72, 101, 124)
+    background-color: rgb(72, 101, 124);
 }
 
 .progress-bar .bg-info {
@@ -86,4 +87,19 @@
 
 .progress-bar .bg-danger {
     background-color: rgb(255,149,160)
+}
+
+.progress-bar-striped {
+    background-size: 24px 24px;
+    background-image: linear-gradient(45deg,#ffffff26 25%,#0000 0,#0000 50%,#ffffff26 0,#ffffff26 75%,#0000 0,#0000);
+}
+
+@keyframes progress-bar-stripes {
+    0% {
+        background-position-x: 24px;
+    }
+}
+
+.progress-bar-animated {
+    animation: progress-bar-stripes 1s linear infinite;
 }
