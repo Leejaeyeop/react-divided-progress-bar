@@ -1,11 +1,11 @@
 {
   "name": "react-divided-progress-bar",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "author": "Lee jaeyeop",
   "description": "A progress-bar which has divided section based on React.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/davidhu2000/react-spinners.git"
+    "url": "https://github.com/Leejaeyeop/react-divided-progress-bar"
   },
   "keywords": [
     "react-progress-bar",
