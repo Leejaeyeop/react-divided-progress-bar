@@ -1,22 +1,22 @@
+import ProgressBar from "./dist/index.js"
 import { useState } from 'react';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
 
-type ValuePiece = Date | null;
+export default function App() {
+    const [number, setNumber] = useState(100);
 
-type Value = ValuePiece | [ValuePiece, ValuePiece];
-
-function App() {
-  const [value, onChange] = useState<Value>(new Date());
-  return (
-    <div className="App">
-      <header className="App-header">
-        <div>
-          <Calendar onChange={onChange} value={value} />
+    return  (
+        <div style={{width: "50%"}}>
+            <ProgressBar 
+                value={number}
+                divideCount={5}
+                maxValue={100}
+                color="warning"
+                animated
+                stripped
+                colorChanging
+            />
+            <button onClick={() => setNumber(number+1)}>Plus Test</button>
+            <button onClick={() => setNumber(number-1)}>Minus Test</button>
         </div>
-      </header>
-    </div>
-  );
+    )
 }
-
-export default App;
