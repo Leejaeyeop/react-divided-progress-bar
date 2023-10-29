@@ -43,7 +43,8 @@ export default function ProgressBar(props: ProgressBarType) {
             "info": "bg-info",
             "success": "bg-success",
             "warning": "bg-warning",
-            "danger": "bg-danger"
+            "danger": "bg-danger",
+            "black": "bg-black"
         }
         const defaultColorClass = "bg-info"
 
@@ -89,6 +90,10 @@ export default function ProgressBar(props: ProgressBarType) {
             "danger": {
                 begin: [255,149,160],
                 end: [255,72,91]    
+            },
+            "black": {
+                begin: [67,67,67],
+                end: [0,0,0]    
             }
         }
         

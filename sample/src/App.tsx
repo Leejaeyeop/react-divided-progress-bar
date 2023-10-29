@@ -2,7 +2,7 @@ import ProgressBar from "./dist/index"
 import { useState } from 'react';
 
 export default function App() {
-    const [number, setNumber] = useState(0);
+    const [number, setNumber] = useState(50);
     // (function timeTest() {
     //   setTimeout(function() {
     //     setNumber(number+10)
@@ -61,6 +61,15 @@ export default function App() {
                 divideCount={5}
                 maxValue={100}
                 color="danger"
+                animated
+                stripped
+                colorChanging
+            />
+            <ProgressBar 
+                value={number}
+                divideCount={5}
+                maxValue={100}
+                color="black"
                 animated
                 stripped
                 colorChanging
