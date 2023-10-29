@@ -1,15 +1,15 @@
 'use client'
 import "./progressBar.css"
-import {useEffect, useState, useRef} from "react";
+import {useEffect, useRef} from "react";
 
 export type ProgressBarType = {
     value?: number,
     maxValue?: number,
     increaseDuration?: number,
     divide?: boolean
-    divideCount?: number,
+    sections?: number,
     color?: string,
-    colorChanging?:boolean,
+    colorChange?:boolean,
     stripped?: boolean,
     animated?: boolean
 }
@@ -30,9 +30,13 @@ export default function ProgressBar(props: ProgressBarType) {
     const targetPercentage = useRef(0)
     const isAnimating = useRef(false)
 
-    const { value = 0, increaseDuration = 1000, divideCount = 5, 
-        color="info", colorChanging=false, divide = true, 
+    const { value = 0, increaseDuration = 1000, 
+        color = "primary", colorChange = false, divide = true, 
         maxValue = 100, animated = false, stripped = false} = props;
+    let {sections = 2} = props
+    if(sections < 1) {
+        sections = 1
+    }
     
     const progressRef = useRef<HTMLDivElement>(null);
     const progressBarRef = useRef<HTMLDivElement>(null);
@@ -122,7 +126,7 @@ export default function ProgressBar(props: ProgressBarType) {
                 const currentPercentage = startPercentage + (targetPercentage.current - startPercentage) * progress;
     
                 progressElement.style.width = currentPercentage + "%";
-                if(colorChanging) {
+                if(colorChange) {
                     progressElement.style.backgroundColor = getCurColor(currentPercentage)
                 }
                 curPercentage.current = currentPercentage
@@ -149,11 +153,12 @@ export default function ProgressBar(props: ProgressBarType) {
             isAnimating.current = true
             animateProgressBar(increaseDuration);
         }
-    },[value,increaseDuration,isAnimating,maxValue,colorChanging,color])
+    },[value,increaseDuration,isAnimating,maxValue,colorChange,color])
 
-    const getDivideCount = (): number[]  => {
+    const getSections = (): number[]  => {
+        
         let arr = [];
-        for (let i = 0; i < divideCount; i++) arr.push(i);
+        for (let i = 0; i < sections; i++) arr.push(i);
         return arr;
     };
     
@@ -177,8 +182,8 @@ export default function ProgressBar(props: ProgressBarType) {
                         className="divide-bar-container"
                     >
                         {
-                            getDivideCount().map( i => (
-                                i < divideCount -1?
+                            getSections().map( i => (
+                                i < sections -1?
                                     <div key={i} className="divide-bar">
                                     </div>
                                 :
@@ -196,9 +201,9 @@ export default function ProgressBar(props: ProgressBarType) {
                     className="divide-count"
                 >
                     {
-                        getDivideCount().map( i => (
+                        getSections().map( i => (
                             <div key={i} style={{fontSize: "0.9rem"}}>
-                                { ((maxValue / divideCount) * i).toFixed(0) }
+                                { ((maxValue / sections) * i).toFixed(0) }
                             </div>
                         ))
                     }

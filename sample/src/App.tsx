@@ -1,81 +1,77 @@
 import ProgressBar from "react-divided-progress-bar"
+
 import { useState } from 'react';
 
 export default function App() {
-    const [number, setNumber] = useState(50);
-    // (function timeTest() {
-    //   setTimeout(function() {
-    //     setNumber(number+10)
-    //     console.log(number)
-    //   }, 1000);
-    // })()
+    const [number, setNumber] = useState(90);
     return  (
         <div style={{width: "50%"}}>
             <ProgressBar 
                 value={number}
-                divideCount={5}
+                sections={2}
                 maxValue={100}
                 color="primary"
                 animated
                 stripped
-                colorChanging
+                colorChange
             />
             <ProgressBar 
                 value={number}
-                divideCount={5}
+                sections={5}
                 maxValue={100}
                 color="secondary"
                 animated
                 stripped
-                colorChanging
+                colorChange
             />
             <ProgressBar 
                 value={number}
-                divideCount={5}
+                sections={5}
                 maxValue={100}
                 color="success"
                 animated
                 stripped
-                colorChanging
+                colorChange
             />            
             <ProgressBar 
                 value={number}
-                divideCount={5}
+                sections={5}
                 maxValue={100}
                 color="info"
                 animated
                 stripped
-                colorChanging
+                colorChange
             />
             <ProgressBar 
                 value={number}
-                divideCount={5}
+                sections={5}
                 maxValue={100}
                 color="warning"
                 animated
                 stripped
-                colorChanging
+                colorChange
             />
             <ProgressBar 
                 value={number}
-                divideCount={5}
+                sections={5}
                 maxValue={100}
                 color="danger"
                 animated
                 stripped
-                colorChanging
+                colorChange
             />
             <ProgressBar 
                 value={number}
-                divideCount={5}
+                sections={5}
                 maxValue={100}
                 color="black"
                 animated
                 stripped
-                colorChanging
+                increaseDuration={3000}
+                colorChange
             />
-            <button onClick={() => setNumber(number+10)}>Plus Test</button>
-            <button onClick={() => setNumber(number-10)}>Minus Test</button>
+            {/* <button onClick={() => setNumber(number+10)}>Plus Test</button>
+            <button onClick={() => setNumber(number-10)}>Minus Test</button> */}
         </div>
     )
 }
