@@ -14,14 +14,21 @@ export type ProgressBarType = {
     animated?: boolean
 }
 
-type colorClass = {
+type ColorClass = {
     [color:string] : string
+}
+
+type ColorInfo = {
+    [color:string] : {
+        begin: number[],
+        end: number[]
+    }
 }
 
 export default function ProgressBar(props: ProgressBarType) {
     const curPercentage = useRef(0)
     const targetPercentage = useRef(0)
-    const [isAnimating, setIsAnimating] = useState(false)
+    const isAnimating = useRef(false)
 
     const { value = 0, increaseDuration = 1000, divideCount = 5, 
         color="info", colorChanging=false, divide = true, 
@@ -30,7 +37,9 @@ export default function ProgressBar(props: ProgressBarType) {
     const progressRef = useRef<HTMLDivElement>(null);
     const progressBarRef = useRef<HTMLDivElement>(null);
     useEffect(()=> {
-        const colorClass: colorClass = {
+        const colorClass: ColorClass = {
+            "primary": "bg-primary",
+            "secondary": "bg-secondary",
             "info": "bg-info",
             "success": "bg-success",
             "warning": "bg-warning",
@@ -56,7 +65,15 @@ export default function ProgressBar(props: ProgressBarType) {
     },[color,stripped,animated])
 
     useEffect(()=> {
-        const colorInfo: any = {
+        const colorInfo: ColorInfo = {
+            "primary": {
+                begin: [144, 202, 249],
+                end: [66, 165, 245]
+            },
+            "secondary": {
+                begin: [227, 126, 255],
+                end: [214, 67, 255]
+            },
             "info": {
                 begin: [144, 202, 249],
                 end: [47, 162, 255]
@@ -108,7 +125,7 @@ export default function ProgressBar(props: ProgressBarType) {
                 if (progress < 1) {
                     requestAnimationFrame(updatePercentage);
                 } else {
-                    setIsAnimating(false)
+                    isAnimating.current = false
                 }
             }
     
@@ -123,8 +140,8 @@ export default function ProgressBar(props: ProgressBarType) {
             targetPercentage.current = value
         }
 
-        if(!isAnimating) {
-            setIsAnimating(true)
+        if(!isAnimating.current) {
+            isAnimating.current = true
             animateProgressBar(increaseDuration);
         }
     },[value,increaseDuration,isAnimating,maxValue,colorChanging,color])

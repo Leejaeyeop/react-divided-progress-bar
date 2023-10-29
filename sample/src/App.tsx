@@ -1,11 +1,52 @@
-import ProgressBar from "./dist/index.js"
+import ProgressBar from "./dist/index"
 import { useState } from 'react';
 
 export default function App() {
-    const [number, setNumber] = useState(100);
-
+    const [number, setNumber] = useState(0);
+    // (function timeTest() {
+    //   setTimeout(function() {
+    //     setNumber(number+10)
+    //     console.log(number)
+    //   }, 1000);
+    // })()
     return  (
         <div style={{width: "50%"}}>
+            <ProgressBar 
+                value={number}
+                divideCount={5}
+                maxValue={100}
+                color="primary"
+                animated
+                stripped
+                colorChanging
+            />
+            <ProgressBar 
+                value={number}
+                divideCount={5}
+                maxValue={100}
+                color="secondary"
+                animated
+                stripped
+                colorChanging
+            />
+            <ProgressBar 
+                value={number}
+                divideCount={5}
+                maxValue={100}
+                color="success"
+                animated
+                stripped
+                colorChanging
+            />            
+            <ProgressBar 
+                value={number}
+                divideCount={5}
+                maxValue={100}
+                color="info"
+                animated
+                stripped
+                colorChanging
+            />
             <ProgressBar 
                 value={number}
                 divideCount={5}
@@ -15,8 +56,17 @@ export default function App() {
                 stripped
                 colorChanging
             />
-            <button onClick={() => setNumber(number+1)}>Plus Test</button>
-            <button onClick={() => setNumber(number-1)}>Minus Test</button>
+            <ProgressBar 
+                value={number}
+                divideCount={5}
+                maxValue={100}
+                color="danger"
+                animated
+                stripped
+                colorChanging
+            />
+            <button onClick={() => setNumber(number+10)}>Plus Test</button>
+            <button onClick={() => setNumber(number-10)}>Minus Test</button>
         </div>
     )
 }

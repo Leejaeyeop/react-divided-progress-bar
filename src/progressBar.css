@@ -11,7 +11,6 @@
     height: 24px;
     position: relative;
     overflow: visible;
-
 }
 
 .progress {
@@ -57,6 +56,22 @@
     z-index: 1;
 }
 
+.progress-bar-wrapper .bg-primary {
+    background-color: rgb(0, 82, 255);
+}
+
+.progress-bar .bg-primary {
+    background-color: rgb(144, 202, 249);
+}
+
+.progress-bar-wrapper .bg-secondary {
+    background-color: rgb(199,0, 255);
+}
+
+.progress-bar .bg-secondary {
+    background-color: rgb(227, 126, 255);
+}
+
 .progress-bar-wrapper .bg-info {
     background-color: rgb(72, 101, 124);
 }
@@ -74,7 +89,7 @@
 }
 
 .progress-bar-wrapper .bg-warning {
-    background-color: rgb(255,150,0)
+    background-color: rgb(255,86,0)
 }
 
 .progress-bar .bg-warning {
