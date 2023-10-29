@@ -1,4 +1,4 @@
-import ProgressBar from "./dist/index"
+import ProgressBar from "react-divided-progress-bar"
 import { useState } from 'react';
 
 export default function App() {
