@@ -71,31 +71,31 @@ export default function ProgressBar(props: ProgressBarType) {
 
     useEffect(()=> {
         const colorInfo: ColorInfo = {
-            "primary": {
+            primary: {
                 begin: [144, 202, 249],
                 end: [66, 165, 245]
             },
-            "secondary": {
+            secondary: {
                 begin: [227, 126, 255],
                 end: [214, 67, 255]
             },
-            "info": {
+            info: {
                 begin: [144, 202, 249],
                 end: [47, 162, 255]
             },
-            "success": {
+            success: {
                 begin: [47,198,128],
                 end: [0,171,139]   
             },
-            "warning": {
+            warning: {
                 begin: [255,193,7],
                 end: [255,162,0]    
             },
-            "danger": {
+            danger: {
                 begin: [255,149,160],
                 end: [255,72,91]    
             },
-            "black": {
+            black: {
                 begin: [67,67,67],
                 end: [0,0,0]    
             }
@@ -103,8 +103,8 @@ export default function ProgressBar(props: ProgressBarType) {
         
         const getCurColor = (currentPercentage: number):string => {
             let r,g,b = 0
-            const [beginR, beginG, beginB] = colorInfo[color].begin ?? colorInfo.info.begin
-            const [endR, endG, endB] = colorInfo[color].end ?? colorInfo.info.end
+            const [beginR, beginG, beginB] = colorInfo[color] ? colorInfo[color]["begin"] : colorInfo["primary"]["begin"]
+            const [endR, endG, endB] = colorInfo[color] ? colorInfo[color]["end"] : colorInfo["primary"]["end"]
     
             r = Math.floor((endR - beginR)*(currentPercentage * 0.01))
             g = Math.floor((endG - beginG)*(currentPercentage * 0.01))
