@@ -151,7 +151,7 @@ export default function ProgressBar(props: ProgressBarType) {
 
         if(!isAnimating.current) {
             isAnimating.current = true
-            animateProgressBar(increaseDuration);
+            animateProgressBar(increaseDuration >= 0 ? increaseDuration : 0);
         }
     },[value,increaseDuration,isAnimating,maxValue,colorChange,color])
 
