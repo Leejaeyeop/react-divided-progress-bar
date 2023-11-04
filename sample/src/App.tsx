@@ -14,6 +14,7 @@ export default function App() {
                 animated
                 stripped
                 colorChange
+                bgColor={false}
             />
             <ProgressBar 
                 value={number}

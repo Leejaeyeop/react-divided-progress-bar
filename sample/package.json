@@ -12,7 +12,7 @@
     "@types/react-dom": "^18.2.14",
     "react": "^18.2.0",
     "react-calendar": "^4.6.1",
-    "react-divided-progress-bar": "^0.1.6",
+    "react-divided-progress-bar": "^0.1.8",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "typescript": "^4.9.5",
