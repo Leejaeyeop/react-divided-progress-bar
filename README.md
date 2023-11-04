@@ -67,6 +67,9 @@ danger
 black   
 ```
 
+### `bgColor`
+`bgColor` means using backgroun-color. default is `true`
+
 ### `animated & stripped & colorChange`
 `animated` and `stripped`'s default is 'false'.   
 `colorChange` means color will be gradually changed based on progress rate. The default is 'false'.

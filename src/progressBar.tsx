@@ -9,6 +9,7 @@ export type ProgressBarType = {
     divide?: boolean
     sections?: number,
     color?: string,
+    bgColor?: boolean,
     colorChange?:boolean,
     stripped?: boolean,
     animated?: boolean
@@ -31,7 +32,7 @@ export default function ProgressBar(props: ProgressBarType) {
     const isAnimating = useRef(false)
 
     const { value = 0, increaseDuration = 1000, 
-        color = "primary", colorChange = false, divide = true, 
+        color = "primary", bgColor = true, colorChange = false, divide = true, 
         maxValue = 100, animated = false, stripped = false} = props;
     let {sections = 2} = props
     if(sections < 1) {
@@ -59,6 +60,7 @@ export default function ProgressBar(props: ProgressBarType) {
         progressBarElement.className = "progress-bar"
 
         progressElement.classList.add(colorClass[color] ?? defaultColorClass);
+        if (bgColor)
         progressBarElement.classList.add(colorClass[color] ?? defaultColorClass);
 
         if(stripped) {
