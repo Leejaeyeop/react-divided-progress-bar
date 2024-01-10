@@ -1,6 +1,6 @@
 "use client";
 import "./progressBar.css";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 
 export type ProgressBarType = {
   value?: number;
@@ -138,7 +138,7 @@ export default function ProgressBar(props: ProgressBarType) {
 
         const currentPercentage =
           startPercentage +
-          (targetPercentage.current - startPercentage) * progress;
+            (targetPercentage.current - startPercentage) * progress ?? 0;
 
         progressElement.style.width = currentPercentage + "%";
         if (colorChange) {
@@ -171,46 +171,38 @@ export default function ProgressBar(props: ProgressBarType) {
     }
   }, [value, increaseDuration, isAnimating, maxValue, colorChange, color]);
 
-  const getSections = (): number[] => {
+  const getSections = useMemo((): number[] => {
     let arr = [];
     for (let i = 0; i < sections; i++) arr.push(i);
     return arr;
-  };
+  }, [sections]);
 
   return (
-    <div style={{ display: "flex" }}>
-      <div className="progress-bar-wrapper">
-        <div ref={progressBarRef} className="progress-bar">
-          <div ref={progressRef} className="progress">
-            <div className="cur-progress-text">{value}%</div>
-          </div>
-          {divide ? (
-            <div className="divide-bar-container">
-              {getSections().map((i) =>
-                i < sections - 1 ? (
-                  <div key={i} className="divide-bar"></div>
-                ) : (
-                  <div key={i}></div>
-                )
-              )}
-            </div>
-          ) : (
-            <div></div>
-          )}
+    <div className="progress-bar-container">
+      <div ref={progressBarRef} className="progress-bar">
+        <div ref={progressRef} className="progress">
+          <div className="cur-progress-text">{value}%</div>
         </div>
         {divide ? (
-          <div className="divide-count">
-            {getSections().map((i) => (
-              <div key={i} style={{ fontSize: "0.9rem" }}>
-                {((maxValue / sections) * i).toFixed(0)}
-              </div>
-            ))}
-            <div>{maxValue}</div>
+          <div className="divide-bar-container">
+            {getSections.map((i) =>
+              i < sections - 1 ? (
+                <div key={i} className="divide-bar"></div>
+              ) : (
+                <div key={i}></div>
+              )
+            )}
           </div>
-        ) : (
-          <div></div>
-        )}
+        ) : null}
       </div>
+      {divide ? (
+        <div className="divide-count">
+          {getSections.map((i) => (
+            <div key={i}>{((maxValue / sections) * i).toFixed(0)}</div>
+          ))}
+          <div>{maxValue}</div>
+        </div>
+      ) : null}
     </div>
   );
 }

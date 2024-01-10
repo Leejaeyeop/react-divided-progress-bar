@@ -4,8 +4,17 @@ import { useState } from "react";
 
 export default function App() {
   const [number, setNumber] = useState(90);
+
+  //   useEffect(() => {
+  //     const time = () =>
+  //       setInterval(() => {
+  //         setNumber((preNumber) => preNumber + 1);
+  //       }, 1000);
+  //     time();
+  //     return () => clearInterval(time());
+  //   }, []);
   return (
-    <div style={{ width: "50%" }}>
+    <div>
       <ProgressBar
         value={number}
         sections={5}
@@ -71,8 +80,8 @@ export default function App() {
         increaseDuration={3000}
         colorChange
       />
-      <button onClick={() => setNumber(number + 10)}>Plus Test</button>
-      <button onClick={() => setNumber(number - 10)}>Minus Test</button>
+      <button onClick={() => setNumber((p) => p + 10)}>Plus Test</button>
+      <button onClick={() => setNumber((p) => p - 10)}>Minus Test</button>
     </div>
   );
 }

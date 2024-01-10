@@ -1,5 +1,5 @@
-.progress-bar-wrapper {
-  flex-grow: 1;
+.progress-bar-container {
+  width: 100%;
 }
 .progress-bar {
   width: 100%;
@@ -24,10 +24,12 @@
   position: relative;
   display: flex;
   > *:last-child {
+    font-size: 0.9rem;
     position: absolute;
-    right: -1rem;
+    right: 0rem;
   }
   > :not(:last-child) {
+    font-size: 0.9rem;
     flex-grow: 1;
     text-align: left;
   }
@@ -57,7 +59,7 @@
   z-index: 1;
 }
 
-.progress-bar-wrapper .bg-primary {
+.progress-bar-container .bg-primary {
   background-color: rgb(0, 82, 255);
 }
 
@@ -65,7 +67,7 @@
   background-color: rgb(144, 202, 249);
 }
 
-.progress-bar-wrapper .bg-secondary {
+.progress-bar-container .bg-secondary {
   background-color: rgb(199, 0, 255);
 }
 
@@ -73,7 +75,7 @@
   background-color: rgb(227, 126, 255);
 }
 
-.progress-bar-wrapper .bg-info {
+.progress-bar-container .bg-info {
   background-color: rgb(72, 101, 124);
 }
 
@@ -81,7 +83,7 @@
   background-color: rgb(144, 202, 249);
 }
 
-.progress-bar-wrapper .bg-success {
+.progress-bar-container .bg-success {
   background-color: rgb(25, 135, 84);
 }
 
@@ -89,7 +91,7 @@
   background-color: rgb(47, 198, 128);
 }
 
-.progress-bar-wrapper .bg-warning {
+.progress-bar-container .bg-warning {
   background-color: rgb(255, 86, 0);
 }
 
@@ -97,7 +99,7 @@
   background-color: rgb(255, 193, 7);
 }
 
-.progress-bar-wrapper .bg-danger {
+.progress-bar-container .bg-danger {
   background-color: rgb(220, 53, 69);
 }
 
@@ -105,7 +107,7 @@
   background-color: rgb(255, 149, 160);
 }
 
-.progress-bar-wrapper .bg-black {
+.progress-bar-container .bg-black {
   background-color: rgb(197, 197, 197);
 }
 
