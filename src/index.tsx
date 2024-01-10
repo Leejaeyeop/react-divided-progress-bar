@@ -1,6 +1,6 @@
-import ProgressBar from './progressBar';
+import ProgressBar from "./progressBar";
 
-export type { ProgressBarType } from './progressBar.js';
+export type { ProgressBarType } from "./progressBar.js";
 
 export { ProgressBar };
 

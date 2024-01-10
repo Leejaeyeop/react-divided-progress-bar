@@ -1,128 +1,138 @@
 .progress-bar-wrapper {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 .progress-bar {
-    width: 100%;
-    border: 1px solid;
-    border-radius: 6px;
-    padding: 2px;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08);
-    text-align: center;
-    height: 24px;
-    position: relative;
-    overflow: visible;
+  width: 100%;
+  border: 1px solid;
+  border-radius: 6px;
+  padding: 2px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25),
+    0 1px rgba(255, 255, 255, 0.08);
+  text-align: center;
+  height: 24px;
+  position: relative;
+  overflow: visible;
 }
 
 .progress {
-    height: 100%;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
 }
 .divide-count {
-    position: relative;
-    display: flex;
-    > *:last-child {
-        position: absolute;
-        right: -1rem;
-    }
-    > :not(:last-child) {
-        flex-grow: 1;
-        text-align: left;
-    }
+  position: relative;
+  display: flex;
+  > *:last-child {
+    position: absolute;
+    right: -1rem;
+  }
+  > :not(:last-child) {
+    flex-grow: 1;
+    text-align: left;
+  }
 }
 
 .divide-bar-container {
-    display: flex;
-    width: 100%;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    top: 0px;
+  display: flex;
+  width: 100%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0px;
 }
 .divide-bar-container * {
-    flex-grow: 1;
+  flex-grow: 1;
 }
 .divide-bar {
-    border-right: 2px solid white;
-    margin: 2px 0px 2px 0px;
-    /* box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08); */
+  border-right: 2px solid white;
+  margin: 2px 0px 2px 0px;
+  /* box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.08); */
 }
 
 .cur-progress-text {
-    color: white;
-    text-align: center;
-    flex-grow: 1;
-    z-index: 1;
+  color: white;
+  text-align: center;
+  flex-grow: 1;
+  z-index: 1;
 }
 
 .progress-bar-wrapper .bg-primary {
-    background-color: rgb(0, 82, 255);
+  background-color: rgb(0, 82, 255);
 }
 
 .progress-bar .bg-primary {
-    background-color: rgb(144, 202, 249);
+  background-color: rgb(144, 202, 249);
 }
 
 .progress-bar-wrapper .bg-secondary {
-    background-color: rgb(199,0, 255);
+  background-color: rgb(199, 0, 255);
 }
 
 .progress-bar .bg-secondary {
-    background-color: rgb(227, 126, 255);
+  background-color: rgb(227, 126, 255);
 }
 
 .progress-bar-wrapper .bg-info {
-    background-color: rgb(72, 101, 124);
+  background-color: rgb(72, 101, 124);
 }
 
 .progress-bar .bg-info {
-    background-color: rgb(144, 202, 249);
+  background-color: rgb(144, 202, 249);
 }
 
 .progress-bar-wrapper .bg-success {
-    background-color: rgb(25,135,84)
+  background-color: rgb(25, 135, 84);
 }
 
 .progress-bar .bg-success {
-    background-color: rgb(47,198,128)
+  background-color: rgb(47, 198, 128);
 }
 
 .progress-bar-wrapper .bg-warning {
-    background-color: rgb(255,86,0)
+  background-color: rgb(255, 86, 0);
 }
 
 .progress-bar .bg-warning {
-    background-color: rgb(255,193,7)
+  background-color: rgb(255, 193, 7);
 }
 
 .progress-bar-wrapper .bg-danger {
-    background-color: rgb(220,53,69)
+  background-color: rgb(220, 53, 69);
 }
 
 .progress-bar .bg-danger {
-    background-color: rgb(255,149,160)
+  background-color: rgb(255, 149, 160);
 }
 
 .progress-bar-wrapper .bg-black {
-    background-color: rgb(197,197,197)
+  background-color: rgb(197, 197, 197);
 }
 
 .progress-bar .bg-black {
-    background-color: rgb(0,0,0)
+  background-color: rgb(0, 0, 0);
 }
 
 .progress-bar-striped {
-    background-size: 24px 24px;
-    background-image: linear-gradient(45deg,#ffffff26 25%,#0000 0,#0000 50%,#ffffff26 0,#ffffff26 75%,#0000 0,#0000);
+  background-size: 24px 24px;
+  background-image: linear-gradient(
+    45deg,
+    #ffffff26 25%,
+    #0000 0,
+    #0000 50%,
+    #ffffff26 0,
+    #ffffff26 75%,
+    #0000 0,
+    #0000
+  );
 }
 
 @keyframes progress-bar-stripes {
-    0% {
-        background-position-x: 24px;
-    }
+  0% {
+    background-position-x: 24px;
+  }
 }
 
 .progress-bar-animated {
-    animation: progress-bar-stripes 1s linear infinite;
+  animation: progress-bar-stripes 1s linear infinite;
 }
