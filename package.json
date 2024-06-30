@@ -58,7 +58,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "copy-styles": "cp src/*.css dist",
-    "prepare": "rm -rf dist && mkdir dist && tsc && npm run copy-styles",
+    "prepare": "rm -rf dist && mkdir dist && tsc -p tsconfig.build.json && npm run copy-styles",
     "eject": "react-scripts eject",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
