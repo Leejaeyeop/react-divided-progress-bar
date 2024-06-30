@@ -14,6 +14,13 @@ export type ProgressBarProps = {
   animated?: boolean;
 };
 
+type ColorInfo = {
+  [color: string]: {
+    begin: number[];
+    end: number[];
+  };
+};
+
 const colorClass = {
   primary: "bg-primary",
   secondary: "bg-secondary",
@@ -22,13 +29,6 @@ const colorClass = {
   warning: "bg-warning",
   danger: "bg-danger",
   black: "bg-black",
-};
-
-type ColorInfo = {
-  [color: string]: {
-    begin: number[];
-    end: number[];
-  };
 };
 
 export const ProgressBarStyle = {
@@ -59,7 +59,6 @@ export default function ProgressBar(props: ProgressBarProps) {
   const progressBarRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const defaultColorClass = "bg-info";
-
     const progressElement = progressRef.current as HTMLDivElement;
     const progressBarElement = progressBarRef.current as HTMLDivElement;
 
@@ -127,13 +126,13 @@ export default function ProgressBar(props: ProgressBarProps) {
       return `rgb(${beginR + r}, ${beginG + g}, ${beginB + b})`;
     };
 
+    let animation: number | null = null;
     const animateProgressBar = (duration: number) => {
       const startPercentage = curPercentage.current;
-
       const startTime = performance.now();
-      const updatePercentage = (timestamp: number) => {
-        const progressElement = progressRef.current as HTMLDivElement;
 
+      return function updatePercentage(timestamp: number) {
+        const progressElement = progressRef.current as HTMLDivElement;
         const elapsed = timestamp - startTime;
         const progress = Math.min(elapsed / duration, 1);
 
@@ -148,14 +147,12 @@ export default function ProgressBar(props: ProgressBarProps) {
         }
         curPercentage.current = currentPercentage;
 
-        if (progress < 1) {
-          requestAnimationFrame(updatePercentage);
+        if (progress < 1 && isAnimating.current) {
+          animation = requestAnimationFrame(updatePercentage);
         } else {
           isAnimating.current = false;
         }
       };
-
-      requestAnimationFrame(updatePercentage);
     };
 
     if (value > maxValue) {
@@ -166,11 +163,20 @@ export default function ProgressBar(props: ProgressBarProps) {
       targetPercentage.current = value;
     }
 
-    if (!isAnimating.current) {
+    if (!isAnimating.current && value < maxValue) {
       isAnimating.current = true;
-      animateProgressBar(increaseDuration >= 0 ? increaseDuration : 0);
+      animation = requestAnimationFrame(
+        animateProgressBar(increaseDuration >= 0 ? increaseDuration : 0)
+      );
     }
-  }, [value, increaseDuration, isAnimating, maxValue, colorChange, color]);
+
+    return () => {
+      isAnimating.current = false;
+      if (animation) {
+        cancelAnimationFrame(animation);
+      }
+    };
+  }, [value, increaseDuration, maxValue, colorChange, color]);
 
   const getSections = useMemo((): number[] => {
     let arr = [];
