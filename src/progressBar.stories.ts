@@ -1,6 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import { fn } from "@storybook/test";
-import ProgressBar from "./progressBar";
+import ProgressBar from "./index";
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -36,16 +35,32 @@ export const Secondary: Story = {
   },
 };
 
-// export const Large: Story = {
-//   args: {
-//     size: 'large',
-//     label: 'Button',
-//   },
-// };
+export const Info: Story = {
+  args: {
+    color: "info",
+  },
+};
 
-// export const Small: Story = {
-//   args: {
-//     size: 'small',
-//     label: 'Button',
-//   },
-// };
+export const Success: Story = {
+  args: {
+    color: "success",
+  },
+};
+
+export const Warning: Story = {
+  args: {
+    color: "warning",
+  },
+};
+
+export const Danger: Story = {
+  args: {
+    color: "danger",
+  },
+};
+
+export const Black: Story = {
+  args: {
+    color: "black",
+  },
+};
