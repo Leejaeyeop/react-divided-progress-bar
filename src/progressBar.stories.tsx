@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/react";
-import ProgressBar from "./index";
+import ProgressBar, { ProgressBarStyle } from "./index";
+
+const ProgressBarColor = Object.keys(ProgressBarStyle.color).join("|");
 
 // More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
@@ -13,7 +15,66 @@ const meta = {
   tags: ["autodocs"],
   // More on argTypes: https://storybook.js.org/docs/api/argtypes
   argTypes: {
-    color: { control: "color" },
+    value: {
+      control: "number",
+      table: {
+        defaultValue: { summary: "0" },
+      },
+    },
+    increaseDuration: {
+      control: "number",
+      table: {
+        defaultValue: { summary: "1000" },
+      },
+    },
+    color: {
+      control: "multi-select",
+      table: {
+        type: {
+          summary: ProgressBarColor,
+        },
+        defaultValue: { summary: "default" },
+      },
+      options: [
+        "primary",
+        "secondary",
+        "info",
+        "success",
+        "warning",
+        "danger",
+        "black",
+      ],
+    },
+    colorChange: {
+      control: "boolean",
+      table: {
+        defaultValue: { summary: "false" },
+      },
+    },
+    divide: {
+      control: "boolean",
+      table: {
+        defaultValue: { summary: "true" },
+      },
+    },
+    maxValue: {
+      control: "number",
+      table: {
+        defaultValue: { summary: "100" },
+      },
+    },
+    animated: {
+      control: "boolean",
+      table: {
+        defaultValue: { summary: "false" },
+      },
+    },
+    stripped: {
+      control: "boolean",
+      table: {
+        defaultValue: { summary: "false" },
+      },
+    },
   },
   // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
   args: {},
@@ -22,7 +83,12 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// More on writing stories with args: https://storybook.js.org/docs/writing-stories/args
+export const Default: Story = {
+  render: (props) => {
+    return <ProgressBar {...props} />;
+  },
+};
+
 export const Primary: Story = {
   args: {
     color: "primary",
