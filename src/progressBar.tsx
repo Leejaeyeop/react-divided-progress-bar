@@ -2,20 +2,26 @@
 import "./progressBar.css";
 import { useEffect, useRef, useMemo } from "react";
 
-export type ProgressBarType = {
+export type ProgressBarProps = {
   value?: number;
   maxValue?: number;
   increaseDuration?: number;
   divide?: boolean;
   sections?: number;
-  color?: string;
+  color?: keyof typeof colorClass;
   colorChange?: boolean;
   stripped?: boolean;
   animated?: boolean;
 };
 
-type ColorClass = {
-  [color: string]: string;
+const colorClass = {
+  primary: "bg-primary",
+  secondary: "bg-secondary",
+  info: "bg-info",
+  success: "bg-success",
+  warning: "bg-warning",
+  danger: "bg-danger",
+  black: "bg-black",
 };
 
 type ColorInfo = {
@@ -25,7 +31,11 @@ type ColorInfo = {
   };
 };
 
-export default function ProgressBar(props: ProgressBarType) {
+export const ProgressBarStyle = {
+  color: colorClass,
+};
+
+export default function ProgressBar(props: ProgressBarProps) {
   const curPercentage = useRef(0);
   const targetPercentage = useRef(0);
   const isAnimating = useRef(false);
@@ -48,15 +58,6 @@ export default function ProgressBar(props: ProgressBarType) {
   const progressRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const colorClass: ColorClass = {
-      primary: "bg-primary",
-      secondary: "bg-secondary",
-      info: "bg-info",
-      success: "bg-success",
-      warning: "bg-warning",
-      danger: "bg-danger",
-      black: "bg-black",
-    };
     const defaultColorClass = "bg-info";
 
     const progressElement = progressRef.current as HTMLDivElement;
