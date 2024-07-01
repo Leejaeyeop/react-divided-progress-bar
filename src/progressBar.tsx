@@ -1,6 +1,7 @@
 "use client";
 import "./progressBar.css";
 import { useEffect, useRef, useMemo } from "react";
+import { COLOR_CLASS, COLOR_INFO } from "./progressBarConfig";
 
 export type ProgressBarProps = {
   value?: number;
@@ -8,37 +9,18 @@ export type ProgressBarProps = {
   increaseDuration?: number;
   divide?: boolean;
   sections?: number;
-  color?: keyof typeof colorClass;
+  color?: (typeof COLOR_CLASS)[number];
   colorChange?: boolean;
   stripped?: boolean;
   animated?: boolean;
 };
 
-type ColorInfo = {
-  [color: string]: {
-    begin: number[];
-    end: number[];
-  };
-};
-
-const colorClass = {
-  primary: "bg-primary",
-  secondary: "bg-secondary",
-  info: "bg-info",
-  success: "bg-success",
-  warning: "bg-warning",
-  danger: "bg-danger",
-  black: "bg-black",
-};
-
 export const ProgressBarStyle = {
-  color: colorClass,
+  color: COLOR_CLASS,
 };
 
 export default function ProgressBar(props: ProgressBarProps) {
-  const curPercentage = useRef(0);
   const targetPercentage = useRef(0);
-  const isAnimating = useRef(false);
 
   const {
     value = 0,
@@ -55,18 +37,46 @@ export default function ProgressBar(props: ProgressBarProps) {
     sections = 1;
   }
 
+  const progressAnimation: KeyframeAnimationOptions = {
+    duration: 1,
+    easing: "ease-out",
+    fill: "forwards",
+    iterations: 1,
+  };
+
+  const getCurColor = (currentPercentage: number): string => {
+    let r,
+      g,
+      b = 0;
+    const [beginR, beginG, beginB] =
+      color in COLOR_INFO ? COLOR_INFO[color].begin : COLOR_INFO.primary.begin;
+    const [endR, endG, endB] =
+      color in COLOR_INFO ? COLOR_INFO[color].end : COLOR_INFO.primary.end;
+
+    r = Math.floor((endR - beginR) * (currentPercentage * 0.01));
+    g = Math.floor((endG - beginG) * (currentPercentage * 0.01));
+    b = Math.floor((endB - beginB) * (currentPercentage * 0.01));
+
+    return `rgb(${beginR + r}, ${beginG + g}, ${beginB + b})`;
+  };
+
+  const getSections = useMemo((): number[] => {
+    let arr = [];
+    for (let i = 0; i < sections; i++) arr.push(i);
+    return arr;
+  }, [sections]);
+
   const progressRef = useRef<HTMLDivElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const defaultColorClass = "bg-info";
     const progressElement = progressRef.current as HTMLDivElement;
     const progressBarElement = progressBarRef.current as HTMLDivElement;
 
     progressElement.className = "progress";
     progressBarElement.className = "progress-bar";
 
-    progressElement.classList.add(colorClass[color] ?? defaultColorClass);
-    progressBarElement.classList.add(colorClass[color] ?? defaultColorClass);
+    progressElement.classList.add(`bg-${color}`);
+    progressBarElement.classList.add(`bg-${color}`);
 
     if (stripped) {
       progressElement.classList.add("progress-bar-striped");
@@ -77,82 +87,35 @@ export default function ProgressBar(props: ProgressBarProps) {
   }, [color, stripped, animated]);
 
   useEffect(() => {
-    const colorInfo: ColorInfo = {
-      primary: {
-        begin: [144, 202, 249],
-        end: [66, 165, 245],
-      },
-      secondary: {
-        begin: [227, 126, 255],
-        end: [214, 67, 255],
-      },
-      info: {
-        begin: [144, 202, 249],
-        end: [47, 162, 255],
-      },
-      success: {
-        begin: [47, 198, 128],
-        end: [0, 171, 139],
-      },
-      warning: {
-        begin: [255, 193, 7],
-        end: [255, 162, 0],
-      },
-      danger: {
-        begin: [255, 149, 160],
-        end: [255, 72, 91],
-      },
-      black: {
-        begin: [67, 67, 67],
-        end: [0, 0, 0],
-      },
-    };
-
-    const getCurColor = (currentPercentage: number): string => {
-      let r,
-        g,
-        b = 0;
-      const [beginR, beginG, beginB] = colorInfo[color]
-        ? colorInfo[color]["begin"]
-        : colorInfo["primary"]["begin"];
-      const [endR, endG, endB] = colorInfo[color]
-        ? colorInfo[color]["end"]
-        : colorInfo["primary"]["end"];
-
-      r = Math.floor((endR - beginR) * (currentPercentage * 0.01));
-      g = Math.floor((endG - beginG) * (currentPercentage * 0.01));
-      b = Math.floor((endB - beginB) * (currentPercentage * 0.01));
-
-      return `rgb(${beginR + r}, ${beginG + g}, ${beginB + b})`;
-    };
-
-    let animation: number | null = null;
     const animateProgressBar = (duration: number) => {
-      const startPercentage = curPercentage.current;
-      const startTime = performance.now();
-
-      return function updatePercentage(timestamp: number) {
-        const progressElement = progressRef.current as HTMLDivElement;
-        const elapsed = timestamp - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-
-        const currentPercentage =
-          startPercentage +
-            (targetPercentage.current - startPercentage) * progress ?? 0;
-
-        progressElement.style.width = currentPercentage + "%";
-        if (colorChange) {
-          progressElement.style.backgroundColor =
-            getCurColor(currentPercentage);
+      const progressBarElement = progressBarRef.current as HTMLDivElement;
+      const progressElement = progressRef.current as HTMLDivElement;
+      const startPercentage =
+        (parseInt(getComputedStyle(progressElement).getPropertyValue("width")) /
+          parseInt(
+            getComputedStyle(progressBarElement).getPropertyValue("width")
+          )) *
+        100;
+      progressElement.animate(
+        [
+          {
+            width: startPercentage + "%",
+            backgroundColor: colorChange
+              ? getCurColor(startPercentage)
+              : undefined,
+          },
+          {
+            width: targetPercentage.current + "%",
+            backgroundColor: colorChange
+              ? getCurColor(targetPercentage.current)
+              : undefined,
+          },
+        ],
+        {
+          ...progressAnimation,
+          duration,
         }
-        curPercentage.current = currentPercentage;
-
-        if (progress < 1 && isAnimating.current) {
-          animation = requestAnimationFrame(updatePercentage);
-        } else {
-          isAnimating.current = false;
-        }
-      };
+      );
     };
 
     if (value > maxValue) {
@@ -163,26 +126,8 @@ export default function ProgressBar(props: ProgressBarProps) {
       targetPercentage.current = value;
     }
 
-    if (!isAnimating.current && value < maxValue) {
-      isAnimating.current = true;
-      animation = requestAnimationFrame(
-        animateProgressBar(increaseDuration >= 0 ? increaseDuration : 0)
-      );
-    }
-
-    return () => {
-      isAnimating.current = false;
-      if (animation) {
-        cancelAnimationFrame(animation);
-      }
-    };
+    animateProgressBar(increaseDuration >= 0 ? increaseDuration : 0);
   }, [value, increaseDuration, maxValue, colorChange, color]);
-
-  const getSections = useMemo((): number[] => {
-    let arr = [];
-    for (let i = 0; i < sections; i++) arr.push(i);
-    return arr;
-  }, [sections]);
 
   return (
     <div className="progress-bar-container">
