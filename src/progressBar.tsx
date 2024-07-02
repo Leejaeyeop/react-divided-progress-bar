@@ -1,6 +1,6 @@
 "use client";
 import "./progressBar.css";
-import { useEffect, useRef, useMemo } from "react";
+import { useEffect, useRef, useMemo, forwardRef } from "react";
 import { COLOR_CLASS, COLOR_INFO } from "./progressBarConfig";
 
 export type ProgressBarProps = {
@@ -19,7 +19,10 @@ export const ProgressBarStyle = {
   color: COLOR_CLASS,
 };
 
-export default function ProgressBar(props: ProgressBarProps) {
+const ProgressBar = forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement> & ProgressBarProps
+>(({ className, ...props }, ref) => {
   const targetPercentage = useRef(0);
 
   const {
@@ -36,29 +39,6 @@ export default function ProgressBar(props: ProgressBarProps) {
   if (sections < 1) {
     sections = 1;
   }
-
-  const progressAnimation: KeyframeAnimationOptions = {
-    duration: 1,
-    easing: "ease-out",
-    fill: "forwards",
-    iterations: 1,
-  };
-
-  const getCurColor = (currentPercentage: number): string => {
-    let r,
-      g,
-      b = 0;
-    const [beginR, beginG, beginB] =
-      color in COLOR_INFO ? COLOR_INFO[color].begin : COLOR_INFO.primary.begin;
-    const [endR, endG, endB] =
-      color in COLOR_INFO ? COLOR_INFO[color].end : COLOR_INFO.primary.end;
-
-    r = Math.floor((endR - beginR) * (currentPercentage * 0.01));
-    g = Math.floor((endG - beginG) * (currentPercentage * 0.01));
-    b = Math.floor((endB - beginB) * (currentPercentage * 0.01));
-
-    return `rgb(${beginR + r}, ${beginG + g}, ${beginB + b})`;
-  };
 
   const getSections = useMemo((): number[] => {
     let arr = [];
@@ -87,6 +67,31 @@ export default function ProgressBar(props: ProgressBarProps) {
   }, [color, stripped, animated]);
 
   useEffect(() => {
+    const progressAnimation: KeyframeAnimationOptions = {
+      duration: 1,
+      easing: "ease-out",
+      fill: "forwards",
+      iterations: 1,
+    };
+
+    const getCurColor = (currentPercentage: number): string => {
+      let r,
+        g,
+        b = 0;
+      const [beginR, beginG, beginB] =
+        color in COLOR_INFO
+          ? COLOR_INFO[color].begin
+          : COLOR_INFO.primary.begin;
+      const [endR, endG, endB] =
+        color in COLOR_INFO ? COLOR_INFO[color].end : COLOR_INFO.primary.end;
+
+      r = Math.floor((endR - beginR) * (currentPercentage * 0.01));
+      g = Math.floor((endG - beginG) * (currentPercentage * 0.01));
+      b = Math.floor((endB - beginB) * (currentPercentage * 0.01));
+
+      return `rgb(${beginR + r}, ${beginG + g}, ${beginB + b})`;
+    };
+
     const animateProgressBar = (duration: number) => {
       const progressBarElement = progressBarRef.current as HTMLDivElement;
       const progressElement = progressRef.current as HTMLDivElement;
@@ -130,7 +135,7 @@ export default function ProgressBar(props: ProgressBarProps) {
   }, [value, increaseDuration, maxValue, colorChange, color]);
 
   return (
-    <div className="progress-bar-container">
+    <div ref={ref} className={[className, "progress-bar-container"].join(" ")}>
       <div ref={progressBarRef} className="progress-bar">
         <div ref={progressRef} className="progress">
           <div className="cur-progress-text">{value}%</div>
@@ -157,4 +162,6 @@ export default function ProgressBar(props: ProgressBarProps) {
       ) : null}
     </div>
   );
-}
+});
+
+export default ProgressBar;
