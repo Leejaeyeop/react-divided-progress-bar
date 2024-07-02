@@ -1,6 +1,6 @@
 {
   "name": "react-divided-progress-bar",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "author": "Lee jaeyeop",
   "description": "A progress-bar which has divided section based on React.js",
   "repository": {
