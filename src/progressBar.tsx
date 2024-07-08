@@ -2,6 +2,7 @@
 import "./progressBar.css";
 import { useEffect, useRef, useMemo, forwardRef } from "react";
 import { COLOR_CLASS, COLOR_INFO } from "./progressBarConfig";
+import { clsx } from "clsx";
 
 export type ProgressBarProps = {
   value?: number;
@@ -39,6 +40,8 @@ const ProgressBar = forwardRef<
   if (sections < 1) {
     sections = 1;
   }
+  const progressRef = useRef<HTMLDivElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
 
   const getSections = useMemo((): number[] => {
     let arr = [];
@@ -46,24 +49,17 @@ const ProgressBar = forwardRef<
     return arr;
   }, [sections]);
 
-  const progressRef = useRef<HTMLDivElement>(null);
-  const progressBarRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const progressElement = progressRef.current as HTMLDivElement;
-    const progressBarElement = progressBarRef.current as HTMLDivElement;
+  const getProgressBarClass = useMemo((): string => {
+    return clsx("progress-bar", `bg-${color}`);
+  }, [color]);
 
-    progressElement.className = "progress";
-    progressBarElement.className = "progress-bar";
-
-    progressElement.classList.add(`bg-${color}`);
-    progressBarElement.classList.add(`bg-${color}`);
-
-    if (stripped) {
-      progressElement.classList.add("progress-bar-striped");
-    }
-    if (animated) {
-      progressElement.classList.add("progress-bar-animated");
-    }
+  const getProgressClass = useMemo((): string => {
+    return clsx(
+      "progress",
+      `bg-${color}`,
+      stripped && "progress-bar-striped",
+      animated && "progress-bar-animated"
+    );
   }, [color, stripped, animated]);
 
   useEffect(() => {
@@ -135,9 +131,9 @@ const ProgressBar = forwardRef<
   }, [value, increaseDuration, maxValue, colorChange, color]);
 
   return (
-    <div ref={ref} className={[className, "progress-bar-container"].join(" ")}>
-      <div ref={progressBarRef} className="progress-bar">
-        <div ref={progressRef} className="progress">
+    <div ref={ref} className={clsx(className, "progress-bar-container")}>
+      <div ref={progressBarRef} className={getProgressBarClass}>
+        <div ref={progressRef} className={getProgressClass}>
           <div className="cur-progress-text">{value}%</div>
         </div>
         {divide ? (
