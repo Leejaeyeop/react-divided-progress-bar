@@ -3,30 +3,29 @@ import ProgressBar, { ProgressBarStyle } from "./index";
 
 const ProgressBarColor = ProgressBarStyle.color.join("|");
 
-// More on how to set up stories at: https://storybook.js.org/docs/writing-stories#default-export
 const meta = {
   title: "Example/ProgressBar",
   component: ProgressBar,
   parameters: {
-    // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
     layout: "full",
   },
-  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
   tags: ["autodocs"],
-  // More on argTypes: https://storybook.js.org/docs/api/argtypes
   argTypes: {
     value: {
+      // set percent 
       control: "number",
       table: {
         defaultValue: { summary: "0" },
       },
     },
     increaseDuration: {
+      // set increase duration for percent
       control: "number",
       table: {
         defaultValue: { summary: "1000" },
       },
     },
+    // set color
     color: {
       control: "multi-select",
       table: {
@@ -45,30 +44,35 @@ const meta = {
         "black",
       ],
     },
+    // set whether or not color change
     colorChange: {
       control: "boolean",
       table: {
         defaultValue: { summary: "false" },
       },
     },
+    // set ui divide bar option
     divide: {
       control: "boolean",
       table: {
         defaultValue: { summary: "true" },
       },
     },
+    // set maxvalue
     maxValue: {
       control: "number",
       table: {
         defaultValue: { summary: "100" },
       },
     },
+    // set whether or not animated
     animated: {
       control: "boolean",
       table: {
         defaultValue: { summary: "false" },
       },
     },
+    // set whether or not stripped
     stripped: {
       control: "boolean",
       table: {
@@ -76,7 +80,6 @@ const meta = {
       },
     },
   },
-  // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
   args: {},
 } satisfies Meta<typeof ProgressBar>;
 
