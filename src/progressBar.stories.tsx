@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import ProgressBar, { ProgressBarStyle } from "./index";
+import React from "react";
 
 const ProgressBarColor = ProgressBarStyle.color.join("|");
 
@@ -12,7 +13,7 @@ const meta = {
   tags: ["autodocs"],
   argTypes: {
     value: {
-      // set percent 
+      // set percent
       control: "number",
       table: {
         defaultValue: { summary: "0" },

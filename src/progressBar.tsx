@@ -1,4 +1,3 @@
-"use client";
 import "./progressBar.css";
 import { useEffect, useRef, useMemo, forwardRef } from "react";
 import { COLOR_CLASS, COLOR_INFO } from "./progressBarConfig";
