@@ -1,6 +1,6 @@
 {
   "name": "react-divided-progress-bar",
-  "version": "0.2.2",
+  "version": "0.3.1",
   "author": "Lee jaeyeop",
   "description": "A progress-bar which has divided section based on React.js",
   "repository": {
@@ -72,8 +72,7 @@
   "scripts": {
     "start": "rollup -c -w",
     "build": "rm -rf dist && rollup -c",
-    "copy-styles": "cp src/*.css dist",
-    "prepare": "rm -rf dist && mkdir dist && tsc -p tsconfig.build.json && npm run copy-styles",
+    "prepare": "npm run build",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
