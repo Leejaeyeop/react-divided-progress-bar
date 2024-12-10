@@ -35,15 +35,7 @@ const meta = {
         },
         defaultValue: { summary: "default" },
       },
-      options: [
-        "primary",
-        "secondary",
-        "info",
-        "success",
-        "warning",
-        "danger",
-        "black",
-      ],
+      options: ["primary", "secondary", "info", "success", "warning", "danger", "black"],
     },
     // set whether or not color change
     colorChange: {
@@ -80,6 +72,12 @@ const meta = {
         defaultValue: { summary: "false" },
       },
     },
+    sections: {
+      control: "number",
+      table: {
+        defaultValue: { summary: "1" },
+      },
+    },
   },
   args: {},
 } satisfies Meta<typeof ProgressBar>;
@@ -88,7 +86,7 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  render: (props) => {
+  render: props => {
     return <ProgressBar {...props} />;
   },
 };
