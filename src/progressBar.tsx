@@ -2,115 +2,149 @@ import "./progressBar.css";
 import { useEffect, useRef, useMemo, forwardRef } from "react";
 import { COLOR_CLASS, COLOR_INFO } from "./progressBarConfig";
 import { clsx } from "clsx";
-import React from "react";
 
+// 타입 정의
+export type ProgressBarColor = (typeof COLOR_CLASS)[number];
 export type ProgressBarProps = {
   value?: number;
   maxValue?: number;
   increaseDuration?: number;
   divide?: boolean;
   sections?: number;
-  color?: (typeof COLOR_CLASS)[number];
+  color?: ProgressBarColor;
   colorChange?: boolean;
   stripped?: boolean;
   animated?: boolean;
-};
+  className?: string;
+} & React.HTMLAttributes<HTMLDivElement>;
 
 export const ProgressBarStyle = {
   color: COLOR_CLASS,
 };
 
-const ProgressBar = forwardRef<HTMLDivElement, ProgressBarProps & React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => {
-  const targetPercentage = useRef(0);
-  const {
-    value = 0,
-    increaseDuration = 1000,
-    color = "primary",
-    colorChange = false,
-    divide = true,
-    maxValue = 100,
-    animated = false,
-    stripped = false,
-  } = props;
+const ProgressBar = forwardRef<HTMLDivElement, ProgressBarProps>(
+  (
+    {
+      className,
+      value = 0,
+      maxValue = 100,
+      increaseDuration = 1000,
+      color = "primary",
+      colorChange = false,
+      divide = true,
+      sections = 2,
+      animated = false,
+      stripped = false,
+      ...restProps
+    },
+    ref,
+  ) => {
+    // Refs
+    const progressRef = useRef<HTMLDivElement>(null);
+    const progressBarRef = useRef<HTMLDivElement>(null);
+    const animationRef = useRef<Animation | null>(null);
 
-  let { sections = 2 } = props;
-  sections = Math.max(sections, 1);
+    // Validated values
+    const normalizedSections = Math.max(1, sections);
+    const clampedValue = Math.min(Math.max(value, 0), maxValue);
+    const percentage = (clampedValue / maxValue) * 100;
 
-  const progressRef = useRef<HTMLDivElement | null>(null);
-  const progressBarRef = useRef<HTMLDivElement | null>(null);
+    // Memoized values
+    const sectionsArray = useMemo(() => Array.from({ length: normalizedSections }, (_, i) => i), [normalizedSections]);
 
-  const getSections = useMemo((): number[] => {
-    return Array.from({ length: sections }, (_, i) => i);
-  }, [sections]);
+    const progressBarClass = useMemo(() => clsx("progress-bar", `bg-${color}`), [color]);
 
-  const getProgressBarClass = useMemo(() => clsx("progress-bar", `bg-${color}`), [color]);
-  const getProgressClass = useMemo(
-    () => clsx("progress", `bg-${color}`, stripped && "progress-bar-striped", animated && "progress-bar-animated"),
-    [color, stripped, animated],
-  );
+    const progressClass = useMemo(
+      () => clsx("progress", `bg-${color}`, stripped && "progress-bar-striped", animated && "progress-bar-animated"),
+      [color, stripped, animated],
+    );
 
-  useEffect(() => {
-    const progressAnimation: KeyframeAnimationOptions = {
-      duration: 1,
-      easing: "ease-out",
-      fill: "forwards",
-      iterations: 1,
-    };
+    // Color calculation
+    const calculateColor = useMemo(
+      () => (currentPercentage: number) => {
+        const colorInfo = COLOR_INFO[color in COLOR_INFO ? color : "primary"];
+        const [beginR, beginG, beginB] = colorInfo.begin;
+        const [endR, endG, endB] = colorInfo.end;
 
-    const getCurColor = (currentPercentage: number): string => {
-      const [beginR, beginG, beginB] = COLOR_INFO[color]?.begin || COLOR_INFO.primary.begin;
-      const [endR, endG, endB] = COLOR_INFO[color]?.end || COLOR_INFO.primary.end;
-      const r = Math.floor((endR - beginR) * (currentPercentage * 0.01));
-      const g = Math.floor((endG - beginG) * (currentPercentage * 0.01));
-      const b = Math.floor((endB - beginB) * (currentPercentage * 0.01));
-      return `rgb(${beginR + r}, ${beginG + g}, ${beginB + b})`;
-    };
+        const r = Math.floor((endR - beginR) * (currentPercentage / 100));
+        const g = Math.floor((endG - beginG) * (currentPercentage / 100));
+        const b = Math.floor((endB - beginB) * (currentPercentage / 100));
 
-    const animateProgressBar = (duration: number) => {
-      const progressBarElement = progressBarRef.current!;
-      const progressElement = progressRef.current!;
-      const startPercentage =
-        (parseInt(getComputedStyle(progressElement).getPropertyValue("width")) / parseInt(getComputedStyle(progressBarElement).getPropertyValue("width"))) *
-        100;
+        return `rgb(${beginR + r}, ${beginG + g}, ${beginB + b})`;
+      },
+      [color],
+    );
 
-      progressElement.animate(
+    // Animation logic
+    useEffect(() => {
+      if (!progressBarRef.current || !progressRef.current) return;
+
+      const progressBarElement = progressBarRef.current;
+      const progressElement = progressRef.current;
+
+      // Calculate current progress
+      const currentWidth = parseFloat(getComputedStyle(progressElement).width);
+      const containerWidth = parseFloat(getComputedStyle(progressBarElement).width);
+      const startPercentage = containerWidth > 0 ? (currentWidth / containerWidth) * 100 : 0;
+
+      // Cancel previous animation
+      if (animationRef.current) {
+        animationRef.current.cancel();
+      }
+
+      // Create new animation
+      animationRef.current = progressElement.animate(
         [
-          { width: startPercentage + "%", backgroundColor: colorChange ? getCurColor(startPercentage) : undefined },
-          { width: targetPercentage.current + "%", backgroundColor: colorChange ? getCurColor(targetPercentage.current) : undefined },
+          {
+            width: `${startPercentage}%`,
+            backgroundColor: colorChange ? calculateColor(startPercentage) : undefined,
+          },
+          {
+            width: `${percentage}%`,
+            backgroundColor: colorChange ? calculateColor(percentage) : undefined,
+          },
         ],
         {
-          ...progressAnimation,
-          duration,
+          duration: Math.max(0, increaseDuration),
+          easing: "ease-out",
+          fill: "forwards",
         },
       );
-    };
 
-    targetPercentage.current = Math.min(Math.max(value, 0), maxValue);
-    animateProgressBar(increaseDuration >= 0 ? increaseDuration : 0);
-  }, [value, increaseDuration, maxValue, colorChange, color]);
+      return () => {
+        if (animationRef.current) {
+          animationRef.current.cancel();
+        }
+      };
+    }, [percentage, increaseDuration, colorChange, calculateColor]);
 
-  return (
-    <div ref={ref} className={clsx(className, "progress-bar-container")}>
-      <div ref={progressBarRef} className={getProgressBarClass}>
-        <div ref={progressRef} className={getProgressClass}>
-          <div className="cur-progress-text">{value}%</div>
+    return (
+      <div ref={ref} className={clsx(className, "progress-bar-container")} {...restProps}>
+        <div ref={progressBarRef} className={progressBarClass}>
+          <div ref={progressRef} className={progressClass}>
+            <div className="cur-progress-text">{clampedValue}%</div>
+          </div>
+          {divide && (
+            <div className="divide-bar-container">
+              {sectionsArray.slice(0, -1).map(i => (
+                <div key={i} className="divide-bar" />
+              ))}
+            </div>
+          )}
         </div>
         {divide && (
-          <div className="divide-bar-container">
-            {getSections.map(i => (i < sections - 1 ? <div key={i} className="divide-bar"></div> : <div key={i}></div>))}
+          <div className="divide-count">
+            {sectionsArray.map(i => (
+              <div key={i}>{Math.floor((maxValue / normalizedSections) * i)}</div>
+            ))}
+            <div>{maxValue}</div>
           </div>
         )}
       </div>
-      {divide && (
-        <div className="divide-count">
-          {getSections.map(i => (
-            <div key={i}>{((maxValue / sections) * i).toFixed(0)}</div>
-          ))}
-          <div>{maxValue}</div>
-        </div>
-      )}
-    </div>
-  );
-});
+    );
+  },
+);
+
+ProgressBar.displayName = "ProgressBar";
 
 export default ProgressBar;
