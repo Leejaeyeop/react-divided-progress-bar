@@ -6,21 +6,31 @@ import typescript from "@rollup/plugin-typescript";
 import autoprefixer from "autoprefixer";
 import postcss from "rollup-plugin-postcss";
 import cssimport from "postcss-import";
+import cleaner from "rollup-plugin-cleaner";
 import pkg from "./package.json";
+import { terser } from "rollup-plugin-terser";
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default {
-  external: [],
+const config = {
+  external: Object.keys(pkg.peerDependencies || {}),
   input: "./src/index.tsx", // 진입점
   output: [
     {
       file: pkg.main,
-      format: "cjs", // cjs로 output
+      format: "cjs",
       sourcemap: true,
-      banner: "/* eslint-disable no-unused-expressions, no-undef */",
+      exports: "named",
+    },
+    {
+      file: pkg.module,
+      format: "esm",
+      sourcemap: true,
+      exports: "named",
     },
   ],
   plugins: [
+    cleaner({
+      targets: ["./dist/"],
+    }),
     peerDepsExternal(),
     nodeResolve(),
     babel({
@@ -33,5 +43,8 @@ export default {
     postcss({
       plugins: [cssimport(), autoprefixer()],
     }),
+    terser(),
   ],
 };
+
+export default config;
